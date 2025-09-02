@@ -1,0 +1,96 @@
+WORKING-WITH-SOCKETS-IN-C
+
+The code below shows how to create a C program that establishes a socket connection with a target host. This allows you to build more advanced programs for scanning or interacting with services.
+
+⚠️ For educational purposes only • Developed by M!ss s3c
+
+📝 Step-by-step guide: Creating and running your program
+
+1. Create the program file
+
+In the terminal, type:
+
+nano desec_socket.c
+
+
+Add the following code:
+
+#include <stdio.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+
+int main(void) {
+
+    int mySocket; 
+    int connectResult;
+    struct sockaddr_in target;
+
+    mySocket = socket(AF_INET, SOCK_STREAM, 0);
+    if(mySocket < 0){
+        printf("Error creating socket\n");
+        return 1;
+    }
+
+    target.sin_family = AF_INET;
+    target.sin_port = htons(80);
+    target.sin_addr.s_addr = inet_addr("192.168.0.1");
+
+    connectResult = connect(mySocket, (struct sockaddr *)&target, sizeof(target));
+    if(connectResult == 0){
+        printf("Port open\n");
+    } else {
+        printf("Port closed\n");
+    }
+
+    close(mySocket);
+
+    return 0;
+}
+
+2. Compile the program
+
+In the terminal, type:
+
+gcc desec_socket.c -o desec_socket
+
+
+gcc → C compiler
+
+-o desec_socket → name of the executable
+
+3. Run the program
+./desec_socket
+
+
+Expected output:
+
+Port open
+
+
+or
+
+Port closed
+
+4. Notes and improvements
+
+You can automate this code by allowing the IP and port to be passed as variables or arguments instead of using a fixed port.
+
+Check man socket and man 7 ip for more details on socket functions and network programming.
+
+Always close sockets to free system resources.
+
+👉 What you learned here
+
+socket() → creates a TCP socket.
+
+connect() → attempts to establish a connection to a target IP and port.
+
+struct sockaddr_in → stores IP and port information for network connections.
+
+htons() → converts port numbers to network byte order.
+
+inet_addr() → converts a string IP to a network address.
+
+close() → closes the socket after use.
